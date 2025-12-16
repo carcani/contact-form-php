@@ -103,13 +103,13 @@ extension=curl
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Issues and PRs are welcome !
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 ![Logo](https://github.raspgot.fr/raspgot-blue.png)    
 Developed by [**Raspgot**](https://raspgot.fr) — [contact@raspgot.fr](mailto:contact@raspgot.fr)
