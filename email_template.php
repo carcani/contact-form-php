@@ -56,7 +56,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style="padding:0 0 18px 0; vertical-align:top; word-break:break-all;">
+                                        <td style="padding:0 0 18px 0; vertical-align:top; word-break:break-word; word-wrap:break-word;">
                                             <div style="font-size:11px; color:#6b7280; text-transform:uppercase; letter-spacing:.5px; margin:0 0 4px 0; font-weight:600;">Email</div>
                                             <a href="mailto:<?= $email; ?>" style="font-size:15px; color:#2563eb; text-decoration:none;"><?= $email; ?></a>
                                         </td>
@@ -92,7 +92,7 @@
                                 <tr>
                                     <td style="font-size:12px; color:#6b7280; line-height:1.4;">
                                         <strong style="color:#374151;">Sender IP:</strong> <?= $ip; ?><br />
-                                        <span style="color:#9ca3af;">This email was generated automatically from your contact form</span>
+                                        <span style="color:#6b7280;">This email was generated automatically from your contact form</span>
                                     </td>
                                 </tr>
                             </table>
