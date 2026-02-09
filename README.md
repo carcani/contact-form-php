@@ -1,13 +1,13 @@
 # Contact-Form-PHP
 
-[![version](https://img.shields.io/badge/version-1.7.5-blue.svg)](https://github.com/raspgot/Contact-Form-PHP)
-[![code size](https://img.shields.io/github/languages/code-size/raspgot/Contact-Form-PHP)](https://github.com/raspgot/Contact-Form-PHP)
-[![closed issues](https://img.shields.io/github/issues-closed-raw/raspgot/Contact-Form-PHP)](https://github.com/raspgot/Contact-Form-PHP/issues?q=is%3Aissue+is%3Aclosed)
-![php](https://img.shields.io/badge/PHP-7/8+-777BB4?logo=php)
-[![stars](https://img.shields.io/github/stars/raspgot/Contact-Form-PHP?style=social)](https://github.com/raspgot/Contact-Form-PHP/stargazers)
+[![version](https://img.shields.io/badge/version-1.7.5-0366D6?style=flat-square&logo=github)](https://github.com/raspgot/Contact-Form-PHP)
+[![php](https://img.shields.io/badge/PHP-7/8+-777BB4?style=flat-square&logo=php&logoColor=white)](https://www.php.net)
+[![bootstrap](https://img.shields.io/badge/Bootstrap-5+-7952B3?style=flat-square&logo=bootstrap&logoColor=white)](https://getbootstrap.com)
+[![closed issues](https://img.shields.io/github/issues-closed-raw/raspgot/Contact-Form-PHP?style=flat-square)](https://github.com/raspgot/Contact-Form-PHP/issues?q=is%3Aissue+is%3Aclosed)
+[![stars](https://img.shields.io/github/stars/raspgot/Contact-Form-PHP?style=flat-square)](https://github.com/raspgot/Contact-Form-PHP/stargazers)
 
-A **modern**, **secure** and **lightweight** contact form for PHP projects    
-Built with **Bootstrap 5**, **AJAX**, **PHPMailer**, and **Google reCAPTCHA v3** — no jQuery, no bloat    
+A **modern**, **secure** and **lightweight** contact form for PHP projects
+Built with **Bootstrap 5**, **AJAX**, **PHPMailer**, and **Google reCAPTCHA v3** — no jQuery, no bloat
 🔐 Designed with **security**, **performance** and **accessibility** in mind
 
 ![Demo](https://github.raspgot.fr/contact-form-raspgot.gif)
