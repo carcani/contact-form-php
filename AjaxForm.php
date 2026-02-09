@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 // Start session (required for rate limiting)
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+	session_start();
 }
 
 // Always return responses as JSON
@@ -51,17 +51,17 @@ const RECAPTCHA_MIN_SCORE     = 0.6;                             // Minimum bot 
 // ============================================================================
 
 const RESPONSES = [
-    'success'          => '✉️ Your message has been sent!',
-    'enter_name'       => '⚠️ Please enter your name.',
-    'enter_email'      => '⚠️ Please enter a valid email address.',
-    'enter_message'    => '⚠️ Please enter your message.',
-    'enter_subject'    => '⚠️ Please enter a subject.',
-    'token_error'      => '⚠️ reCAPTCHA token missing.',
-    'domain_error'     => '⚠️ Invalid email domain.',
-    'method_error'     => '⚠️ Method not allowed.',
-    'constant_error'   => '⚠️ Missing configuration constants.',
-    'honeypot_error'   => '🚫 Spam detected.',
-    'limit_rate_error' => '🚫 Too many messages sent. Please try again later.',
+	'success'          => '✉️ Your message has been sent!',
+	'enter_name'       => '⚠️ Please enter your name.',
+	'enter_email'      => '⚠️ Please enter a valid email address.',
+	'enter_message'    => '⚠️ Please enter your message.',
+	'enter_subject'    => '⚠️ Please enter a subject.',
+	'token_error'      => '⚠️ reCAPTCHA token missing.',
+	'domain_error'     => '⚠️ Invalid email domain.',
+	'method_error'     => '⚠️ Method not allowed.',
+	'constant_error'   => '⚠️ Missing configuration constants.',
+	'honeypot_error'   => '🚫 Spam detected.',
+	'limit_rate_error' => '🚫 Too many messages sent. Please try again later.',
 ];
 
 // ============================================================================
@@ -69,7 +69,7 @@ const RESPONSES = [
 // ============================================================================
 
 if (empty(SECRET_KEY) || empty(SMTP_HOST) || empty(SMTP_USERNAME) || empty(SMTP_PASSWORD)) {
-    respond(false, RESPONSES['constant_error']);
+	respond(false, RESPONSES['constant_error']);
 }
 
 // ============================================================================
@@ -78,13 +78,13 @@ if (empty(SECRET_KEY) || empty(SMTP_HOST) || empty(SMTP_USERNAME) || empty(SMTP_
 
 // Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    respond(false, RESPONSES['method_error']);
+	respond(false, RESPONSES['method_error']);
 }
 
 // Block suspicious User-Agents (bots, scrapers, command-line tools)
 $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 if ($userAgent === '' || preg_match('/\b(curl|wget|bot|crawler|spider)\b/i', $userAgent)) {
-    respond(false, RESPONSES['honeypot_error']);
+	respond(false, RESPONSES['honeypot_error']);
 }
 
 // ============================================================================
@@ -108,13 +108,13 @@ $token    = isset($_POST['recaptcha_token']) ? $_POST['recaptcha_token'] : respo
 
 // Honeypot trap: bots fill this hidden field, humans don't see it
 if ($honeypot !== '') {
-    respond(false, RESPONSES['honeypot_error']);
+	respond(false, RESPONSES['honeypot_error']);
 }
 
 // Verify email domain exists (DNS check)
 $domain = substr(strrchr($email, "@"), 1);
 if (!$domain || (!checkdnsrr($domain, 'MX') && !checkdnsrr($domain, 'A'))) {
-    respond(false, RESPONSES['domain_error'], 'email');
+	respond(false, RESPONSES['domain_error'], 'email');
 }
 
 // ============================================================================
@@ -127,12 +127,12 @@ validateRecaptcha($token);
 // ============================================================================
 
 $emailBody = renderEmail([
-    'subject' => $subject,
-    'date'    => $date->format('Y-m-d H:i:s'),
-    'name'    => $name,
-    'email'   => $email,
-    'message' => nl2br($message), // Convert newlines to <br> tags
-    'ip'      => $ip,
+	'subject' => $subject,
+	'date'    => $date->format('Y-m-d H:i:s'),
+	'name'    => $name,
+	'email'   => $email,
+	'message' => nl2br($message), // Convert newlines to <br> tags
+	'ip'      => $ip,
 ]);
 
 // ============================================================================
@@ -140,32 +140,32 @@ $emailBody = renderEmail([
 // ============================================================================
 
 try {
-    // Email #1: Notification to site owner/admin
-    $adminMail = configureMailer(new PHPMailer(true));
-    $adminMail->addAddress(SMTP_USERNAME, 'Admin');
-    $adminMail->addReplyTo($email, $name);
-    $adminMail->Subject = $subject ?: EMAIL_SUBJECT_DEFAULT;
-    $adminMail->Body    = $emailBody;
-    $adminMail->AltBody = buildAltBody($emailBody);
-    $adminMail->send();
+	// Email #1: Notification to site owner/admin
+	$adminMail = configureMailer(new PHPMailer(true));
+	$adminMail->addAddress(SMTP_USERNAME, 'Admin');
+	$adminMail->addReplyTo($email, $name);
+	$adminMail->Subject = $subject ?: EMAIL_SUBJECT_DEFAULT;
+	$adminMail->Body    = $emailBody;
+	$adminMail->AltBody = buildAltBody($emailBody);
+	$adminMail->send();
 
-    // Email #2: Auto-reply confirmation to user
-    $autoReply = configureMailer(new PHPMailer(true));
-    $autoReply->addAddress($email, $name);
-    $autoReply->Subject = EMAIL_SUBJECT_AUTOREPLY . ' — ' . $subject;
-    $autoReplyHtml = '<p>Hello ' . $name . ',</p>'
-        . '<p>Thank you for reaching out. Here is a copy of your message:</p>'
-        . '<hr>' . $emailBody;
-    $autoReply->Body    = $autoReplyHtml;
-    $autoReply->AltBody = buildAltBody($autoReplyHtml);
-    $autoReply->send();
+	// Email #2: Auto-reply confirmation to user
+	$autoReply = configureMailer(new PHPMailer(true));
+	$autoReply->addAddress($email, $name);
+	$autoReply->Subject = EMAIL_SUBJECT_AUTOREPLY . ' — ' . $subject;
+	$autoReplyHtml = '<p>Hello ' . $name . ',</p>'
+		. '<p>Thank you for reaching out. Here is a copy of your message:</p>'
+		. '<hr>' . $emailBody;
+	$autoReply->Body    = $autoReplyHtml;
+	$autoReply->AltBody = buildAltBody($autoReplyHtml);
+	$autoReply->send();
 
-    // Success! Return positive response
-    respond(true, RESPONSES['success']);
-    
+	// Success! Return positive response
+	respond(true, RESPONSES['success']);
+
 } catch (Exception $e) {
-    // Email sending failed (SMTP error, network issue, etc.)
-    respond(false, '❌ Mail error: ' . $e->getMessage(), 'email');
+	// Email sending failed (SMTP error, network issue, etc.)
+	respond(false, '❌ Mail error: ' . $e->getMessage(), 'email');
 }
 
 // ============================================================================
@@ -181,11 +181,11 @@ try {
  */
 function buildAltBody(string $html): string
 {
-    // Convert line breaks and paragraph endings to newlines
-    $text = preg_replace('/<br\s*\/?>(?i)/', "\n", $html) ?? $html; // case-insensitive via inline modifier
-    $text = preg_replace('/<\/p\s*>/i', "\n\n", $text) ?? $text;
-    $text = strip_tags($text);
-    return html_entity_decode($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+	// Convert line breaks and paragraph endings to newlines
+	$text = preg_replace('/<br\s*\/?>/i', "\n", $html) ?? $html; // Case-insensitive
+	$text = preg_replace('/<\/p\s*>/i', "\n\n", $text) ?? $text;
+	$text = strip_tags($text);
+	return html_entity_decode($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
 /**
@@ -197,67 +197,67 @@ function buildAltBody(string $html): string
  */
 function validateRecaptcha(string $token): void
 {
-    // Contact Google's reCAPTCHA API
-    $ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
+	// Contact Google's reCAPTCHA API
+	$ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
 
-    $postFields = http_build_query([
-        'secret'   => SECRET_KEY,
-        'response' => $token,
-        'remoteip' => $_SERVER['REMOTE_ADDR'] ?? null,
-    ]);
+	$postFields = http_build_query([
+		'secret'   => SECRET_KEY,
+		'response' => $token,
+		'remoteip' => $_SERVER['REMOTE_ADDR'],
+	]);
 
-    curl_setopt_array($ch, [
-        CURLOPT_POST           => true,
-        CURLOPT_POSTFIELDS     => $postFields,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT        => 10,
-    ]);
+	curl_setopt_array($ch, [
+		CURLOPT_POST           => true,
+		CURLOPT_POSTFIELDS     => $postFields,
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_TIMEOUT        => 10,
+	]);
 
-    $response  = curl_exec($ch);
-    $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $curlError = curl_error($ch);
-    curl_close($ch);
+	$response  = curl_exec($ch);
+	$httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	$curlError = curl_error($ch);
+	curl_close($ch);
 
-    // Check 1: cURL request succeeded
-    if ($response === false) {
-        respond(false, '❌ reCAPTCHA request failed: ' . ($curlError ?: 'Unknown cURL error.'));
-    }
+	// Check 1: cURL request succeeded
+	if ($response === false) {
+		respond(false, '❌ reCAPTCHA request failed: ' . ($curlError ?: 'Unknown cURL error.'));
+	}
 
-    // Check 2: Google returned HTTP 200
-    if ($httpCode !== 200) {
-        respond(false, '❌ reCAPTCHA HTTP error: ' . $httpCode);
-    }
+	// Check 2: Google returned HTTP 200
+	if ($httpCode !== 200) {
+		respond(false, '❌ reCAPTCHA HTTP error: ' . $httpCode);
+	}
 
-    $data = json_decode($response, true);
+	$data = json_decode($response, true);
 
-    // Check 3: Valid JSON response
-    if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
-        respond(false, '❌ Invalid JSON response from reCAPTCHA.');
-    }
+	// Check 3: Valid JSON response
+	if ($data === null || json_last_error() !== JSON_ERROR_NONE) {
+		respond(false, '❌ Invalid JSON response from reCAPTCHA.');
+	}
 
-    // Check 4: Google says token is valid
-    if (empty($data['success'])) {
-        $errors = isset($data['error-codes']) ? implode(', ', $data['error-codes']) : 'Unknown error.';
-        respond(false, '❌ reCAPTCHA verification failed: ' . $errors);
-    }
+	// Check 4: Google says token is valid
+	if (empty($data['success'])) {
+		$errors = isset($data['error-codes']) ? implode(', ', $data['error-codes']) : 'Unknown error.';
+		respond(false, '❌ reCAPTCHA verification failed: ' . $errors);
+	}
 
-    // Check 5: Action matches (prevents token reuse across different forms)
-    $expectedAction = 'submit';
-    if (($data['action'] ?? '') !== $expectedAction) {
-        respond(false, '❌ reCAPTCHA action mismatch.');
-    }
+	// Check 5: Action matches (prevents token reuse across different forms)
+	$expectedAction = 'submit';
+	if (($data['action'] ?? '') !== $expectedAction) {
+		respond(false, '❌ reCAPTCHA action mismatch.');
+	}
 
-    // Check 6: Hostname matches (prevents token theft from other sites)
-    $expectedHost = $_SERVER['SERVER_NAME'] ?? '';
-    if (!empty($expectedHost) && ($data['hostname'] ?? '') !== $expectedHost) {
-        respond(false, '❌ reCAPTCHA hostname mismatch.');
-    }
+	// Check 6: Hostname matches (prevents token theft from other sites)
+	$expectedHost = $_SERVER['SERVER_NAME'] ?? '';
+	if (!empty($expectedHost) && ($data['hostname'] ?? '') !== $expectedHost) {
+		respond(false, '❌ reCAPTCHA hostname mismatch.');
+	}
 
-    // Check 7: Score is above minimum threshold (0.0 = bot, 1.0 = human)
-    $score = $data['score'] ?? 1.0;
-    if ($score < RECAPTCHA_MIN_SCORE) {
-        respond(false, '❌ Low reCAPTCHA score (' . $score . '). You might be a robot.');
-    }
+	// Check 7: Score is above minimum threshold (0.0 = bot, 1.0 = human)
+	$score = $data['score'] ?? 1.0;
+	if ($score < RECAPTCHA_MIN_SCORE) {
+		respond(false, '❌ Low reCAPTCHA score (' . $score . '). You might be a robot.');
+	}
 }
 
 /**
@@ -269,33 +269,33 @@ function validateRecaptcha(string $token): void
  */
 function sanitize(string $data): string
 {
-    // Remove control characters and null bytes (security)
-    $filtered = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+/u', '', $data);
-    if ($filtered === null) {
-        $filtered = $data; // Fallback if regex fails
-    }
+	// Remove control characters and null bytes (security)
+	$filtered = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+/u', '', $data);
+	if ($filtered === null) {
+		$filtered = $data; // Fallback if regex fails
+	}
 
-    // Escape HTML special characters
-    return trim(htmlspecialchars($filtered, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8', true));
+	// Escape HTML special characters
+	return trim(htmlspecialchars($filtered, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8', true));
 }
 
 /**
  * Send JSON response and stop script execution
  * Used for all API responses (success or error)
  *
- * @param bool        $success Success flag
- * @param string      $message User-facing message
- * @param string|null $field   Optional field name for validation errors
+ * @param bool $success Success flag
+ * @param string $message User-facing message
+ * @param string|null $field Optional field name for validation errors
  * @return void
  */
 function respond(bool $success, string $message, ?string $field = null): void
 {
-    echo json_encode([
-        'success' => $success,
-        'message' => $message,
-        'field'   => $field,
-    ]);
-    exit;
+	echo json_encode([
+		'success' => $success,
+		'message' => $message,
+		'field'   => $field,
+	]);
+	exit;
 }
 
 /**
@@ -316,18 +316,18 @@ function respond(bool $success, string $message, ?string $field = null): void
  */
 function renderEmail(array $data): string
 {
-    $template = __DIR__ . '/email_template.php';
-    if (!is_file($template)) {
-        throw new RuntimeException("Email template not found: $template");
-    }
+	$template = __DIR__ . '/email_template.php';
+	if (!is_file($template)) {
+		throw new RuntimeException("Email template not found: $template");
+	}
 
-    // Use closure to isolate template scope
-    return (function () use ($data, $template): string {
-        extract($data, EXTR_SKIP);  // Convert array to variables
-        ob_start();
-        require $template;
-        return ob_get_clean();
-    })();
+	// Use closure to capture template in local scope and prevent variable leakage
+	return (function () use ($data, $template): string {
+		extract($data, EXTR_SKIP);  // Convert array to variables
+		ob_start();
+		require $template;
+		return ob_get_clean();
+	})();
 }
 
 /**
@@ -336,21 +336,22 @@ function renderEmail(array $data): string
  *
  * @param PHPMailer $mailer PHPMailer instance to configure
  * @return PHPMailer Configured mailer
+ * @throws Exception
  */
 function configureMailer(PHPMailer $mailer): PHPMailer
 {
-    $mailer->isSMTP();
-    $mailer->Host       = SMTP_HOST;
-    $mailer->SMTPAuth   = SMTP_AUTH;
-    $mailer->Username   = SMTP_USERNAME;
-    $mailer->Password   = SMTP_PASSWORD;
-    $mailer->SMTPSecure = SMTP_SECURE;
-    $mailer->Port       = SMTP_PORT;
-    $mailer->setFrom(SMTP_USERNAME, FROM_NAME);
-    $mailer->Sender     = SMTP_USERNAME;
-    $mailer->isHTML(true);
-    $mailer->CharSet    = 'UTF-8';
-    return $mailer;
+	$mailer->isSMTP();
+	$mailer->Host       = SMTP_HOST;
+	$mailer->SMTPAuth   = SMTP_AUTH;
+	$mailer->Username   = SMTP_USERNAME;
+	$mailer->Password   = SMTP_PASSWORD;
+	$mailer->SMTPSecure = SMTP_SECURE;
+	$mailer->Port       = SMTP_PORT;
+	$mailer->setFrom(SMTP_USERNAME, FROM_NAME);
+	$mailer->Sender     = SMTP_USERNAME;
+	$mailer->isHTML(true);
+	$mailer->CharSet    = 'UTF-8';
+	return $mailer;
 }
 
 /**
@@ -363,20 +364,20 @@ function configureMailer(PHPMailer $mailer): PHPMailer
  */
 function checkSessionRateLimit(int $max = 5, int $window = 3600): void
 {
-    $now = time();
-    $_SESSION['rate_limit_times'] ??= [];
-    
-    // Remove timestamps older than the window
-    $_SESSION['rate_limit_times'] = array_filter(
-        $_SESSION['rate_limit_times'],
-        fn($timestamp) => $timestamp >= ($now - $window)
-    );
-    
-    // Block if too many recent submissions
-    if (count($_SESSION['rate_limit_times']) >= $max) {
-        respond(false, RESPONSES['limit_rate_error']);
-    }
-    
-    // Record this submission
-    $_SESSION['rate_limit_times'][] = $now;
+	$now = time();
+	$_SESSION['rate_limit_times'] ??= [];
+
+	// Remove timestamps older than the window
+	$_SESSION['rate_limit_times'] = array_filter(
+		$_SESSION['rate_limit_times'],
+		fn($timestamp) => $timestamp >= ($now - $window)
+	);
+
+	// Block if too many recent submissions
+	if (count($_SESSION['rate_limit_times']) >= $max) {
+		respond(false, RESPONSES['limit_rate_error']);
+	}
+
+	// Record this submission
+	$_SESSION['rate_limit_times'][] = $now;
 }
