@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Setup live validation (show green/red feedback as user types)
     form.querySelectorAll('input, select, textarea').forEach((field) => {
         const eventType = field.tagName === 'SELECT' ? 'change' : 'input';
-        
+
         field.addEventListener(eventType, () => {
             const isEmpty = !field.value.trim();
             const isValid = field.checkValidity();
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error(error);
-            
+
             // Show error alert
             if (alertContainer) {
                 alertContainer.className = 'alert alert-danger fade show';
